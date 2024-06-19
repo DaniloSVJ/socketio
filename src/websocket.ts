@@ -1,7 +1,7 @@
 import { io } from './http'
 interface RoomUser {
     socket_id: string,
-    ursername: string,
+    username: string,
     room: string
 }
 interface Message {
@@ -21,14 +21,14 @@ io.on("connection", (socket) => {
         // console.log("=====================")
         //quando usuario se logar ele já vai armazenar essas informações dentro do array
         socket.join(data.room);
-        const userInRoom = users.find((user) => user.ursername === data.ursername && user.room === data.room);
+        const userInRoom = users.find((user) => user.username === data.username && user.room === data.room);
         if (userInRoom) {
             userInRoom.socket_id = socket.id
 
         } else {
             users.push({
                 room: data.room,
-                ursername: data.ursername,
+                username: data.username,
                 socket_id: socket.id
             })
         }
@@ -43,6 +43,7 @@ io.on("connection", (socket) => {
         }
 
         messages.push(message);
+        io.to(data.room).emit("message", message);
 
     })
 
